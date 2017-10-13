@@ -1,0 +1,19 @@
+{
+  "name": "tenx-form",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.77",
+    "ts-loader": "^2.3.7",
+    "typescript": "^2.5.3",
+    "webpack": "^3.7.1",
+    "webpack-dev-server": "^2.9.1"
+  },
+  "dependencies": {
+    "document-register-element": "^1.7.0",
+    "redux": "^3.7.2"
+  }
+}
