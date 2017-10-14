@@ -33,6 +33,15 @@ class TenxForm extends HTMLElement {
     return this.state.getState();
   }
 
+  connectedCallback() {
+    this.state.dispatch(
+      actions.initializeSync(
+        this.attributes.getNamedItem('sync3k-base-url').value, 
+        this.attributes.getNamedItem('sync3k-topic').value,
+        '', 
+        false));
+  }
+
   constructor() {
     super();
     const observer = new MutationObserver((mutations) => {
@@ -73,11 +82,8 @@ class TenxForm extends HTMLElement {
           target.value = diff.rhs;
         }
       }
-      console.log(diffs);
       prevState = this.state.getState();
     });
-
-    this.state.dispatch(actions.initializeSync(`wss://demo.sync3k.io/kafka`, 'tenx-form-demo', '', false));
   }
 }
 
