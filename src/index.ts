@@ -84,11 +84,25 @@ class TenxForm extends HTMLElement {
       }
 
       const submittedDiffs = diff(prevState.submitted, this.state.getState().submitted);
-      for (const diff of submittedDiffs || []) {
-        const newContent = renderSubmission(document.querySelector(`#${this.attributes.getNamedItem('result-template').value}`) as HTMLTemplateElement, diff.item.rhs);
+      const template = document.querySelector(`#${this.attributes.getNamedItem('result-template').value}`) as HTMLTemplateElement;
+      const resultDiv = document.querySelector(`#${this.attributes.getNamedItem('result-div').value}`);
 
-        const resultDiv = document.querySelector(`#${this.attributes.getNamedItem('result-div').value}`);
-        resultDiv.insertBefore(newContent, resultDiv.firstChild);
+      if (submittedDiffs && submittedDiffs.find((diff) => diff.kind !== 'A')) {
+        // In case of complex edits, re-render everything again.
+        // TODO: Find smarter way of handling concurrent submissions.
+        while (resultDiv.hasChildNodes()) {
+          resultDiv.removeChild(resultDiv.lastChild);
+        }
+
+        this.state.getState().submitted.map((submitted) => renderSubmission(template, submitted)).forEach((newContent) => {
+          resultDiv.insertBefore(newContent, resultDiv.firstChild);
+        })
+      } else {
+        for (const diff of submittedDiffs || []) {
+          const newContent = renderSubmission(template, diff.item.rhs);
+
+          resultDiv.insertBefore(newContent, resultDiv.firstChild);
+        }
       }
 
       prevState = this.state.getState();
