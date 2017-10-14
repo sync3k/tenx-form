@@ -1,16 +1,19 @@
-import {createStore, Store} from 'redux';
+import {createStore, compose, Store} from 'redux';
+import {diff} from 'deep-diff';
+import {enhancer, actions} from 'sync3k-client';
 
 type TenxFormState = {
-  submitted?: {[key: string]: string},
+  submitted: [{[key: string]: string}],
   current: {[key: string]: string},
 }
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 class TenxForm extends HTMLElement {
-  private state: Store<TenxFormState> = createStore((state = {current: {}}, action) => {
+  private state: Store<TenxFormState> = createStore((state = {current: {}, submitted: [] as [{[key: string]: string}]}, action) => {
     switch (action.type) {
       case 'UPDATE':
         return {
-          submitted: action.value,
+          ...state,
           current: {
             ...state.current,
             [action.id]: action.value
@@ -19,12 +22,12 @@ class TenxForm extends HTMLElement {
       case 'SUBMIT':
         return {
           ...state,
-          submitted: state.current
+          submitted: [state.current, ...state.submitted]
         }
     }
 
     return state;
-  }, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
+  }, composeEnhancers(enhancer));
 
   get formState() {
     return this.state.getState();
@@ -60,6 +63,21 @@ class TenxForm extends HTMLElement {
       })
     });
     observer.observe(this, {childList: true});
+
+    let prevState: TenxFormState = {current: {}, submitted: [] as [{[key: string]: string}]};
+    this.state.subscribe(() => {
+      const diffs = diff(prevState.current, this.state.getState().current);
+      for (const diff of diffs || []) {
+        const target = this.querySelector(`#${diff.path[0]}`) as HTMLTextAreaElement | HTMLInputElement;
+        if (target !== document.activeElement) {
+          target.value = diff.rhs;
+        }
+      }
+      console.log(diffs);
+      prevState = this.state.getState();
+    });
+
+    this.state.dispatch(actions.initializeSync(`wss://demo.sync3k.io/kafka`, 'tenx-form-demo', '', false));
   }
 }
 
