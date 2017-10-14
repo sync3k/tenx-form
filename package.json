@@ -6,17 +6,15 @@
     "build": "webpack"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.77",
+    "@types/deep-diff": "^0.0.31",
+    "copy-webpack-plugin": "^4.1.1",
     "ts-loader": "^2.3.7",
     "typescript": "^2.5.3",
     "webpack": "^3.7.1",
     "webpack-dev-server": "^2.9.1"
   },
   "dependencies": {
-    "@types/deep-diff": "^0.0.31",
     "deep-diff": "0.3.4",
-    "deep-object-diff": "^1.0.4",
-    "document-register-element": "^1.7.0",
     "redux": "^3.7.2",
     "sync3k-client": "^0.0.4"
   }
