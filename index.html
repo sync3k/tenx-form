@@ -1,25 +1,43 @@
 <html>
-  <head>
-    <title>Tenx Form demo</title>
-  </head>
-  <body>
-    <script src="bundle.js"></script>
-    <h1>Wow such 10X form!</h1>
-    <tenx-form sync3k-base-url="wss://demo.sync3k.io/kafka" sync3k-topic="tenx-form-demo">
-      <label for="name">Name</label> 
-      <input type="text" id="name">
-      <br>
 
-      <label for="email">Email</label> 
-      <input type="text" id="email">
-      <br>
+<head>
+  <title>Tenx Form demo</title>
+</head>
 
-      <label for="comment">Comment</label>
-      <br>
-      <textarea id="comment"></textarea>
-      <br>
-      
-      <input type="submit" value="Send!">
-    </tenx-form>
-  </body>
+<body>
+  <script src="bundle.js"></script>
+  <h1>Wow such 10X form!</h1>
+  <tenx-form sync3k-base-url="wss://demo.sync3k.io/kafka" sync3k-topic="tenx-form-demo" result-div="tenx-result" result-template="result-template">
+    <label for="name">Name</label>
+    <input type="text" id="name">
+    <br>
+
+    <label for="email">Email</label>
+    <input type="text" id="email">
+    <br>
+
+    <label for="comment">Comment</label>
+    <br>
+    <textarea id="comment"></textarea>
+    <br>
+
+    <input type="submit" value="Send!">
+  </tenx-form>
+  <div id="tenx-result"></div>
+  <template id="result-template">
+    <ul>
+      <li>
+        <b>Name</b>
+        <span tenx-name="name" />
+      </li>
+      <li>
+        <b>Email</b>
+        <span tenx-name="email" />
+      </li>
+    </ul>
+    <b>Comment</b>
+    <pre tenx-name="comment"></pre>
+  </template>
+</body>
+
 </html>
