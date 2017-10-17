@@ -44,32 +44,38 @@ class TenxForm extends HTMLElement {
 
   constructor() {
     super();
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((me) => {
-        me.addedNodes.forEach((node) => {
-          if (node instanceof HTMLInputElement) {
-            switch (node.type) {
-              case "submit": {
-                node.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  this.state.dispatch({ type: 'SUBMIT', value: this.state.getState().current });
-                })
-                break;
-              }
-              default: {
-                node.addEventListener("blur", () => {
-                  this.state.dispatch({ type: 'UPDATE', id: node.id, value: node.value });
-                });
-              }
-            }
+    const attachEventHandler = (node: HTMLElement) => {
+      if (node instanceof HTMLInputElement) {
+        console.log(node.type);
+        switch (node.type) {
+          case "submit": {
+            node.addEventListener("click", (e) => {
+              e.preventDefault();
+              this.state.dispatch({ type: 'SUBMIT', value: this.state.getState().current });
+            })
+            break;
           }
-          if (node instanceof HTMLTextAreaElement) {
+          default: {
             node.addEventListener("blur", () => {
               this.state.dispatch({ type: 'UPDATE', id: node.id, value: node.value });
             });
           }
+        }
+      }
+      if (node instanceof HTMLTextAreaElement) {
+        node.addEventListener("blur", () => {
+          this.state.dispatch({ type: 'UPDATE', id: node.id, value: node.value });
         });
-      })
+      }
+    };
+    if (this.querySelectorAll) {
+      this.querySelectorAll('input').forEach(attachEventHandler);
+      this.querySelectorAll('textarea').forEach(attachEventHandler);
+    }
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((me) => {
+        me.addedNodes.forEach(attachEventHandler);
+      });
     });
     observer.observe(this, { childList: true });
 
