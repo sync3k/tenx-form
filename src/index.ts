@@ -46,7 +46,6 @@ class TenxForm extends HTMLElement {
     super();
     const attachEventHandler = (node: HTMLElement) => {
       if (node instanceof HTMLInputElement) {
-        console.log(node.type);
         switch (node.type) {
           case "submit": {
             node.addEventListener("click", (e) => {
